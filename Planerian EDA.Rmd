@@ -1,0 +1,69 @@
+---
+title: "Planerian"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+
+
+
+```{r}
+#import library
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+library(readxl)
+
+```
+
+```{r}
+#import dataset
+data <- read_excel("Planerian Data Bio 1406.xlsx")
+#data is the name of your dataset
+data
+
+```
+```{r}
+#I remove the spaces in the names of the columns and replace them with underscores
+colnames(data) <- gsub(" ", "_", colnames(data))
+#new dataframe called df has the correct format
+df <- data %>% select(starts_with("Week"))
+
+df
+
+
+```
+```{r}
+#this is a nova-Welsh test run them in sperate cells (cmd + option + I on mac) and change the names
+#Week1 should always be group 1 (first arg in the t.test () function)
+t.test(df$Week_1_C, df$Week_1_L, var.equal = FALSE, alternative = "greater")
+
+
+```
+
+
+
+```{r}
+
+# Create a series of bar graphs
+ggplot(df, aes(x = df$Week_1_C, y = df$Week_1_L)) +
+  geom_bar(stat = "summary", fun = "mean") +
+  labs(x = "Time", y = "Mean Length") +
+  ggtitle("Mena Length Across Time") +
+  facet_wrap(~Group, ncol = 1) +
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+
+```
+
